@@ -1,0 +1,11 @@
+services: 
+	db:
+		image: mysql:8.0
+		container_name: mysql_poli_container
+		enviroment:
+			- MYSQL_ROOT_PASSWORD: root
+			- MYSQL_DATABASE=poli:db
+			- MYSQL_USER=poli_user
+			- MYSQL_PASSWORD=1234
+		ports:
+			- "3309:3306"
