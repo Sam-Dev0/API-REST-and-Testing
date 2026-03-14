@@ -1,11 +1,31 @@
-services: 
-	db:
-		image: mysql:8.0
-		container_name: mysql_poli_container
-		enviroment:
-			- MYSQL_ROOT_PASSWORD: root
-			- MYSQL_DATABASE=poli:db
-			- MYSQL_USER=poli_user
-			- MYSQL_PASSWORD=1234
-		ports:
-			- "3309:3306"
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: poli-mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: poli_db
+      MYSQL_USER: poli_user
+      MYSQL_PASSWORD: 1234
+    ports:
+      - "3309:3306"
+    networks:
+      - poli-network
+
+  cloudapp:
+    build: .
+    container_name: spring-cloudapp
+    ports:
+      - "8888:8888"
+    depends_on:
+      - mysql-db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-db:3306/poli_db?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=poli_user
+      - SPRING_DATASOURCE_PASSWORD=1234
+    networks:
+      - poli-network
+
+networks:
+  poli-network:
+    driver: bridge
